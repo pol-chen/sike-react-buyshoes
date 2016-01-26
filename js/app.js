@@ -8,10 +8,10 @@ function makeCartScrollNicely() {
 
 window.onload = function() {
   console.log("page loaded");
-  makeCartScrollNicely();
+  // makeCartScrollNicely();
 
-  var $toggle = document.querySelector(".site__right-sidebar-toggle");
-  $toggle.addEventListener("click",function() {
-    document.body.classList.toggle("js-show-right-sidebar");
-  });
+  // var $toggle = document.querySelector(".site__right-sidebar-toggle");
+  // $toggle.addEventListener("click",function() {
+  //   document.body.classList.toggle("js-show-right-sidebar");
+  // });
 }
