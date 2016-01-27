@@ -2,16 +2,23 @@ const React = require("react");
 
 const QuantityControl = require("./QuantityControl");
 
-const {products,cartItems} = require("../data");
+const CartStore = require("../stores/CartStore");
+const {addCartItem} = CartStore;
+
+const {products} = require("../data");
 
 let Product = React.createClass({
+  addProductToCart(id) {
+  	addCartItem(id);
+  },
   render() {
   	let {id,name,price,imagePath} = this.props.product;
+  	let cartItems = CartStore.getCartItems();
   	let item = cartItems[id];
   	let isAddedDisplay = item ? (
       <QuantityControl item={item} variant="gray" />
   	) : (
-      <a className="product__add">
+      <a className="product__add" onClick={this.addProductToCart.bind(this,id)}>
         <img className="product__add__icon" src="img/cart-icon.svg" />
       </a>
   	);
@@ -42,6 +49,9 @@ let Product = React.createClass({
 });
 
 let Products = React.createClass({
+  componentDidMount() {
+  	CartStore.addChangeListener(this.forceUpdate.bind(this));
+  },
   renderProducts() {
   	let productViews = Object.keys(products).map(id => {
   		return <Product key={id} product={products[id]} />;

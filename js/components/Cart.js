@@ -3,9 +3,15 @@ const React = require("react");
 
 const QuantityControl = require("./QuantityControl");
 
-const {products,cartItems} = require("../data");
+const CartStore = require("../stores/CartStore");
+const {removeCartItem} = CartStore;
+
+const {products} = require("../data");
 
 let CartItem = React.createClass({
+  removeProductFromCart(id) {
+  	removeCartItem(id);
+  },
   render() {
   	let {item} = this.props;
   	let {id,quantity} = this.props.item;
@@ -31,7 +37,7 @@ let CartItem = React.createClass({
               {priceDisplay}
             </div>
           </div>
-          <img className="cart-item__trash" src="img/trash-icon.svg" />
+          <img className="cart-item__trash" src="img/trash-icon.svg" onClick={this.removeProductFromCart.bind(this,id)} />
         </div>
 	    <div className="cart-item__qty">
 	      <QuantityControl item={item} />
@@ -44,9 +50,11 @@ let CartItem = React.createClass({
 let Cart = React.createClass({
   componentDidMount() {
     let $cart = React.findDOMNode(this.refs.cart);
-    Ps.initialize($cart);  
+    Ps.initialize($cart);
+  	CartStore.addChangeListener(this.forceUpdate.bind(this));
   },
   renderCartItems() {
+  	let cartItems = CartStore.getCartItems();
   	let cartItemViews = Object.keys(cartItems).map(id => {
   		return <CartItem key={id} item={cartItems[id]} />;
   	});

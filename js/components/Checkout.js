@@ -1,10 +1,16 @@
 const React = require("react");
 
-const {products,cartItems} = require("../data");
+const {products} = require("../data");
+
+const CartStore = require("../stores/CartStore");
 
 let Checkout = React.createClass({
+  componentDidMount() {
+    CartStore.addChangeListener(this.forceUpdate.bind(this));
+  },
   render() {
-  	let discount = 80;
+    let cartItems = CartStore.getCartItems();
+  	let discount = 0;
   	let subtotal = 0;
   	Object.keys(cartItems).forEach(id => {
   		let price = products[id].price;
@@ -12,6 +18,7 @@ let Checkout = React.createClass({
   		subtotal += price * quantity;
   	});
   	let saving = subtotal - discount;
+    
     return (
 
       <div className="checkout">
@@ -30,12 +37,12 @@ let Checkout = React.createClass({
             Subtotal
           </div>
           <div className="checkout__line__amount checkout__line__amount--strikeout">
-            {'$'+subtotal}
+            {'$'+subtotal.toFixed(2)}
           </div>
         </div>
         <div className="checkout__line">
           <div className="checkout__line__amount checkout__line__amount--omg-savings">
-            {'$'+saving}
+            {'$'+saving.toFixed(2)}
           </div>
         </div>
         <a className="checkout__button">
