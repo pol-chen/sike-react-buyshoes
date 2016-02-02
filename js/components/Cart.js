@@ -1,12 +1,14 @@
 const Ps = require("perfect-scrollbar");
 const React = require("react");
 
+const connect = require("./connect");
+
 const QuantityControl = require("./QuantityControl");
 
 const CartStore = require("../stores/CartStore");
 const {removeCartItem} = CartStore;
 
-const {products} = require("../data");
+const ProductStore = require("../stores/ProductStore");
 
 let CartItem = React.createClass({
   removeProductFromCart(id) {
@@ -15,7 +17,7 @@ let CartItem = React.createClass({
   render() {
   	let {item} = this.props;
   	let {id,quantity} = this.props.item;
-  	let {name,price,imagePath} = products[id];
+  	let {name,price,imagePath} = this.props.product;
 
   	let priceDisplay = '$' + price;
   	if (quantity > 1) {
@@ -51,12 +53,13 @@ let Cart = React.createClass({
   componentDidMount() {
     let $cart = React.findDOMNode(this.refs.cart);
     Ps.initialize($cart);
-  	CartStore.addChangeListener(this.forceUpdate.bind(this));
+  	// CartStore.addChangeListener(this.forceUpdate.bind(this));
   },
   renderCartItems() {
-  	let cartItems = CartStore.getCartItems();
+  	// let cartItems = CartStore.getCartItems();
+    let {cartItems,products} = this.props;
   	let cartItemViews = Object.keys(cartItems).map(id => {
-  		return <CartItem key={id} item={cartItems[id]} />;
+  		return <CartItem key={id} item={cartItems[id]} product={products[id]} />;
   	});
   	return cartItemViews;
   },
@@ -74,4 +77,26 @@ let Cart = React.createClass({
   }
 });
 
-module.exports = Cart;
+// class ConnectedCart extends React.Component {
+//   render() {
+//     return (
+//       <ConnectedStore store={CartStore} propNames={["cartItems"]}>
+//         {propValues => <Cart {...propValues} />}
+//       </ConnectedStore>
+//     )
+//   }
+// }
+
+@connect(CartStore,"cartItems")
+@connect(ProductStore,"products")
+class ConnectedCart extends Cart {};
+
+module.exports = ConnectedCart;
+
+
+// class ConnectedCart extends Cart {};
+// ConnectedCart = connect(CartStore,"cartItems")(ConnectedCart);
+
+// module.exports = ConnectedCart;
+
+// module.exports = MakeConnectedComponent(Cart, CartStore, "cartItems");

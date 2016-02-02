@@ -18677,8 +18677,8 @@
 	
 	var SiteTitle = __webpack_require__(/*! ./SiteTitle */ 158);
 	var Products = __webpack_require__(/*! ./Products */ 159);
-	var Cart = __webpack_require__(/*! ./Cart */ 164);
-	var Checkout = __webpack_require__(/*! ./Checkout */ 185);
+	var Cart = __webpack_require__(/*! ./Cart */ 167);
+	var Checkout = __webpack_require__(/*! ./Checkout */ 189);
 	
 	var App = React.createClass({
 	  displayName: "App",
@@ -18738,12 +18738,29 @@
 
 	"use strict";
 	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
 	var React = __webpack_require__(/*! react */ 1);
+	
+	var connect = __webpack_require__(/*! ./connect */ 188);
+	
+	var ProductStore = __webpack_require__(/*! ../stores/ProductStore */ 190);
+	var toggleShowOnlyLike = ProductStore.toggleShowOnlyLike;
 	
 	var SiteTitle = React.createClass({
 	  displayName: "SiteTitle",
 	
+	  toggleLike: function toggleLike() {
+	    toggleShowOnlyLike();
+	  },
 	  render: function render() {
+	    var isShowOnlyLike = this.props.isShowOnlyLike;
+	
+	    var heart = isShowOnlyLike ? "-liked" : "";
 	    return React.createElement(
 	      "div",
 	      { className: "title" },
@@ -18752,12 +18769,26 @@
 	        null,
 	        "Buy Me Shoes"
 	      ),
-	      React.createElement("img", { className: "title__heart", src: "img/heart.svg" })
+	      React.createElement("img", { className: "title__heart", src: "img/heart" + heart + ".svg", onClick: this.toggleLike.bind(this) })
 	    );
 	  }
 	});
 	
-	module.exports = SiteTitle;
+	var ConnectedSiteTitle = (function (_SiteTitle) {
+	  _inherits(ConnectedSiteTitle, _SiteTitle);
+	
+	  function ConnectedSiteTitle() {
+	    _classCallCheck(this, _ConnectedSiteTitle);
+	
+	    _get(Object.getPrototypeOf(_ConnectedSiteTitle.prototype), "constructor", this).apply(this, arguments);
+	  }
+	
+	  var _ConnectedSiteTitle = ConnectedSiteTitle;
+	  ConnectedSiteTitle = connect(ProductStore, "isShowOnlyLike")(ConnectedSiteTitle) || ConnectedSiteTitle;
+	  return ConnectedSiteTitle;
+	})(SiteTitle);
+	
+	module.exports = ConnectedSiteTitle;
 
 /***/ },
 /* 159 */
@@ -18768,16 +18799,26 @@
 
 	"use strict";
 	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
 	var React = __webpack_require__(/*! react */ 1);
 	
-	var QuantityControl = __webpack_require__(/*! ./QuantityControl */ 160);
+	var connect = __webpack_require__(/*! ./connect */ 188);
 	
-	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 161);
+	var QuantityControl = __webpack_require__(/*! ./QuantityControl */ 162);
+	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 163);
 	var addCartItem = CartStore.addCartItem;
 	
-	var _require = __webpack_require__(/*! ../data */ 163);
+	var LikeStore = __webpack_require__(/*! ../stores/LikeStore */ 165);
+	var addLikeItem = LikeStore.addLikeItem;
+	var removeLikeItem = LikeStore.removeLikeItem;
 	
-	var products = _require.products;
+	var ProductStore = __webpack_require__(/*! ../stores/ProductStore */ 190);
 	
 	var Product = React.createClass({
 	  displayName: "Product",
@@ -18785,20 +18826,33 @@
 	  addProductToCart: function addProductToCart(id) {
 	    addCartItem(id);
 	  },
+	  likeItem: function likeItem(id) {
+	    addLikeItem(id);
+	  },
+	  unlikeItem: function unlikeItem(id) {
+	    removeLikeItem(id);
+	  },
 	  render: function render() {
 	    var _props$product = this.props.product;
 	    var id = _props$product.id;
 	    var name = _props$product.name;
 	    var price = _props$product.price;
 	    var imagePath = _props$product.imagePath;
+	    var _props = this.props;
+	    var item = _props.item;
+	    var like = _props.like;
 	
-	    var cartItems = CartStore.getCartItems();
-	    var item = cartItems[id];
+	    // let cartItems = CartStore.getCartItems();
+	    // let item = cartItems[id];
 	    var isAddedDisplay = item ? React.createElement(QuantityControl, { item: item, variant: "gray" }) : React.createElement(
 	      "a",
 	      { className: "product__add", onClick: this.addProductToCart.bind(this, id) },
 	      React.createElement("img", { className: "product__add__icon", src: "img/cart-icon.svg" })
 	    );
+	
+	    // let likeItems = LikeStore.getLikeItems();
+	    // let like = likeItems[id];
+	    var isLikedDisplay = like ? React.createElement("img", { className: "product__heart", src: "img/heart-liked.svg", onClick: this.unlikeItem.bind(this, id) }) : React.createElement("img", { className: "product__heart", src: "img/heart.svg", onClick: this.likeItem.bind(this, id) });
 	
 	    return React.createElement(
 	      "div",
@@ -18826,7 +18880,7 @@
 	          { className: "product__name" },
 	          name
 	        ),
-	        React.createElement("img", { className: "product__heart", src: "img/heart.svg" })
+	        isLikedDisplay
 	      )
 	    );
 	  }
@@ -18835,30 +18889,167 @@
 	var Products = React.createClass({
 	  displayName: "Products",
 	
-	  componentDidMount: function componentDidMount() {
-	    CartStore.addChangeListener(this.forceUpdate.bind(this));
-	  },
-	  renderProducts: function renderProducts() {
-	    var productViews = Object.keys(products).map(function (id) {
-	      return React.createElement(Product, { key: id, product: products[id] });
+	  // componentDidMount() {
+	  // CartStore.addChangeListener(this.forceUpdate.bind(this));
+	  // LikeStore.addChangeListener(this.forceUpdate.bind(this));
+	  // },
+	  renderProducts: function renderProducts(cartItems, likeItems, filteredProducts) {
+	    var productViews = Object.keys(filteredProducts).map(function (id) {
+	      return React.createElement(Product, { key: id, product: filteredProducts[id], item: cartItems[id], like: likeItems[id] });
 	    });
 	    return productViews;
 	  },
 	
 	  render: function render() {
+	    var _props2 = this.props;
+	    var cartItems = _props2.cartItems;
+	    var likeItems = _props2.likeItems;
+	    var filteredProducts = _props2.filteredProducts;
 	
+	    var productViews = this.renderProducts(cartItems, likeItems, filteredProducts);
 	    return React.createElement(
 	      "div",
 	      { className: "products" },
-	      this.renderProducts()
+	      productViews
 	    );
 	  }
 	});
 	
-	module.exports = Products;
+	// class ConnectedProducts extends React.Component {
+	//   render() {
+	//     return (
+	//       <ConnectedStore store={LikeStore} propNames={["likeItems"]}>
+	//         {propsOfStore1 => {
+	//           return (
+	//             <ConnectedStore store={CartStore} propNames={["cartItems"]}>
+	//               {propsOfStore2 => {
+	//                 <Products {...propsOfStore1} {...propsOfStore2} />
+	//               }}
+	//             </ConnectedStore>
+	//           )
+	//         }}
+	//       </ConnectedStore>
+	//     )
+	//   }
+	// }
+	
+	var ConnectedProducts = (function (_Products) {
+	  _inherits(ConnectedProducts, _Products);
+	
+	  function ConnectedProducts() {
+	    _classCallCheck(this, _ConnectedProducts);
+	
+	    _get(Object.getPrototypeOf(_ConnectedProducts.prototype), "constructor", this).apply(this, arguments);
+	  }
+	
+	  var _ConnectedProducts = ConnectedProducts;
+	  ConnectedProducts = connect(ProductStore, "filteredProducts")(ConnectedProducts) || ConnectedProducts;
+	  ConnectedProducts = connect(LikeStore, "likeItems")(ConnectedProducts) || ConnectedProducts;
+	  ConnectedProducts = connect(CartStore, "cartItems")(ConnectedProducts) || ConnectedProducts;
+	  return ConnectedProducts;
+	})(Products);
+	
+	module.exports = ConnectedProducts;
+	// module.exports = MakeConnectedComponent(MakeConnectedComponent(Products, CartStore, "cartItems"), LikeStore, "likeItems");
 
 /***/ },
 /* 160 */
+/*!*****************************************!*\
+  !*** ./js/components/ConnectedStore.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var React = __webpack_require__(/*! react */ 1);
+	
+	var ConnectedStore = React.createClass({
+	  displayName: "ConnectedStore",
+	
+	  componentDidMount: function componentDidMount() {
+	    this.props.store.addChangeListener(this.forceUpdate.bind(this));
+	  },
+	
+	  render: function render() {
+	    var contentRenderFunction = this.props.children;
+	    var _props = this.props;
+	    var store = _props.store;
+	    var propNames = _props.propNames;
+	
+	    var storeProps = {};
+	
+	    propNames.forEach(function (propName) {
+	      storeProps[propName] = store[propName]();
+	    });
+	
+	    return contentRenderFunction(storeProps);
+	  }
+	});
+	
+	module.exports = ConnectedStore;
+
+/***/ },
+/* 161 */
+/*!*************************************************!*\
+  !*** ./js/components/MakeConnectedComponent.js ***!
+  \*************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var React = __webpack_require__(/*! react */ 1);
+	
+	var ConnectedStore = __webpack_require__(/*! ./ConnectedStore */ 160);
+	
+	function MakeConnectedComponent(ViewComponent, store) {
+		for (var _len = arguments.length, propNames = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+			propNames[_key - 2] = arguments[_key];
+		}
+	
+		var ConnectedComponent = (function (_React$Component) {
+			_inherits(ConnectedComponent, _React$Component);
+	
+			function ConnectedComponent() {
+				_classCallCheck(this, ConnectedComponent);
+	
+				_get(Object.getPrototypeOf(ConnectedComponent.prototype), "constructor", this).apply(this, arguments);
+			}
+	
+			_createClass(ConnectedComponent, [{
+				key: "render",
+				value: function render() {
+					var _this = this;
+	
+					return React.createElement(
+						ConnectedStore,
+						{ store: store, propNames: propNames },
+						function (propValues) {
+							return React.createElement(ViewComponent, _extends({}, propValues, _this.props));
+						}
+					);
+				}
+			}]);
+	
+			return ConnectedComponent;
+		})(React.Component);
+	
+		return ConnectedComponent;
+	};
+	
+	module.exports = MakeConnectedComponent;
+
+/***/ },
+/* 162 */
 /*!******************************************!*\
   !*** ./js/components/QuantityControl.js ***!
   \******************************************/
@@ -18868,7 +19059,7 @@
 	
 	var React = __webpack_require__(/*! react */ 1);
 	
-	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 161);
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 163);
 	var updateCartItemQuantity = CartStore.updateCartItemQuantity;
 	
 	var QuantityControl = React.createClass({
@@ -18918,7 +19109,7 @@
 	module.exports = QuantityControl;
 
 /***/ },
-/* 161 */
+/* 163 */
 /*!********************************!*\
   !*** ./js/stores/CartStore.js ***!
   \********************************/
@@ -18926,7 +19117,7 @@
 
 	"use strict";
 	
-	var EventEmitter = __webpack_require__(/*! events */ 162);
+	var EventEmitter = __webpack_require__(/*! events */ 164);
 	
 	var emitter = new EventEmitter();
 	
@@ -18938,6 +19129,10 @@
 	
 	module.exports = {
 	  getCartItems: function getCartItems() {
+	    return _cartItems;
+	  },
+	
+	  cartItems: function cartItems() {
 	    return _cartItems;
 	  },
 	
@@ -18967,7 +19162,7 @@
 	};
 
 /***/ },
-/* 162 */
+/* 164 */
 /*!********************************************************!*\
   !*** (webpack)/~/node-libs-browser/~/events/events.js ***!
   \********************************************************/
@@ -19238,7 +19433,52 @@
 	}
 
 /***/ },
-/* 163 */
+/* 165 */
+/*!********************************!*\
+  !*** ./js/stores/LikeStore.js ***!
+  \********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var EventEmitter = __webpack_require__(/*! events */ 164);
+	
+	var emitter = new EventEmitter();
+	
+	function emitChange() {
+		emitter.emit("change");
+	}
+	
+	var _likeItems = {};
+	
+	module.exports = {
+		getLikeItems: function getLikeItems() {
+			return _likeItems;
+		},
+		likeItems: function likeItems() {
+			return _likeItems;
+		},
+	
+		addLikeItem: function addLikeItem(productId) {
+			var likeItem = {};
+			likeItem.id = productId;
+			_likeItems[productId] = likeItem;
+			emitChange();
+		},
+		removeLikeItem: function removeLikeItem(productId) {
+			delete _likeItems[productId];
+			emitChange();
+		},
+		addChangeListener: function addChangeListener(callback) {
+			emitter.addListener("change", callback);
+		},
+		removeChangeListener: function removeChangeListener(callback) {
+			emitter.removeListener("change", callback);
+		}
+	};
+
+/***/ },
+/* 166 */
 /*!********************!*\
   !*** ./js/data.js ***!
   \********************/
@@ -19346,7 +19586,7 @@
 	};
 
 /***/ },
-/* 164 */
+/* 167 */
 /*!*******************************!*\
   !*** ./js/components/Cart.js ***!
   \*******************************/
@@ -19354,17 +19594,23 @@
 
 	"use strict";
 	
-	var Ps = __webpack_require__(/*! perfect-scrollbar */ 165);
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Ps = __webpack_require__(/*! perfect-scrollbar */ 168);
 	var React = __webpack_require__(/*! react */ 1);
 	
-	var QuantityControl = __webpack_require__(/*! ./QuantityControl */ 160);
+	var connect = __webpack_require__(/*! ./connect */ 188);
 	
-	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 161);
+	var QuantityControl = __webpack_require__(/*! ./QuantityControl */ 162);
+	
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 163);
 	var removeCartItem = CartStore.removeCartItem;
 	
-	var _require = __webpack_require__(/*! ../data */ 163);
-	
-	var products = _require.products;
+	var ProductStore = __webpack_require__(/*! ../stores/ProductStore */ 190);
 	
 	var CartItem = React.createClass({
 	  displayName: "CartItem",
@@ -19377,10 +19623,10 @@
 	    var _props$item = this.props.item;
 	    var id = _props$item.id;
 	    var quantity = _props$item.quantity;
-	    var _products$id = products[id];
-	    var name = _products$id.name;
-	    var price = _products$id.price;
-	    var imagePath = _products$id.imagePath;
+	    var _props$product = this.props.product;
+	    var name = _props$product.name;
+	    var price = _props$product.price;
+	    var imagePath = _props$product.imagePath;
 	
 	    var priceDisplay = '$' + price;
 	    if (quantity > 1) {
@@ -19429,12 +19675,16 @@
 	  componentDidMount: function componentDidMount() {
 	    var $cart = React.findDOMNode(this.refs.cart);
 	    Ps.initialize($cart);
-	    CartStore.addChangeListener(this.forceUpdate.bind(this));
+	    // CartStore.addChangeListener(this.forceUpdate.bind(this));
 	  },
 	  renderCartItems: function renderCartItems() {
-	    var cartItems = CartStore.getCartItems();
+	    // let cartItems = CartStore.getCartItems();
+	    var _props = this.props;
+	    var cartItems = _props.cartItems;
+	    var products = _props.products;
+	
 	    var cartItemViews = Object.keys(cartItems).map(function (id) {
-	      return React.createElement(CartItem, { key: id, item: cartItems[id] });
+	      return React.createElement(CartItem, { key: id, item: cartItems[id], product: products[id] });
 	    });
 	    return cartItemViews;
 	  },
@@ -19462,10 +19712,44 @@
 	  }
 	});
 	
-	module.exports = Cart;
+	// class ConnectedCart extends React.Component {
+	//   render() {
+	//     return (
+	//       <ConnectedStore store={CartStore} propNames={["cartItems"]}>
+	//         {propValues => <Cart {...propValues} />}
+	//       </ConnectedStore>
+	//     )
+	//   }
+	// }
+	
+	var ConnectedCart = (function (_Cart) {
+	  _inherits(ConnectedCart, _Cart);
+	
+	  function ConnectedCart() {
+	    _classCallCheck(this, _ConnectedCart);
+	
+	    _get(Object.getPrototypeOf(_ConnectedCart.prototype), "constructor", this).apply(this, arguments);
+	  }
+	
+	  var _ConnectedCart = ConnectedCart;
+	  ConnectedCart = connect(ProductStore, "products")(ConnectedCart) || ConnectedCart;
+	  ConnectedCart = connect(CartStore, "cartItems")(ConnectedCart) || ConnectedCart;
+	  return ConnectedCart;
+	})(Cart);
+	
+	;
+	
+	module.exports = ConnectedCart;
+	
+	// class ConnectedCart extends Cart {};
+	// ConnectedCart = connect(CartStore,"cartItems")(ConnectedCart);
+
+	// module.exports = ConnectedCart;
+
+	// module.exports = MakeConnectedComponent(Cart, CartStore, "cartItems");
 
 /***/ },
-/* 165 */
+/* 168 */
 /*!**************************************!*\
   !*** ./~/perfect-scrollbar/index.js ***!
   \**************************************/
@@ -19476,10 +19760,10 @@
 	 */
 	'use strict';
 	
-	module.exports = __webpack_require__(/*! ./src/js/main */ 166);
+	module.exports = __webpack_require__(/*! ./src/js/main */ 169);
 
 /***/ },
-/* 166 */
+/* 169 */
 /*!********************************************!*\
   !*** ./~/perfect-scrollbar/src/js/main.js ***!
   \********************************************/
@@ -19490,9 +19774,9 @@
 	 */
 	'use strict';
 	
-	var destroy = __webpack_require__(/*! ./plugin/destroy */ 167),
-	    initialize = __webpack_require__(/*! ./plugin/initialize */ 175),
-	    update = __webpack_require__(/*! ./plugin/update */ 184);
+	var destroy = __webpack_require__(/*! ./plugin/destroy */ 170),
+	    initialize = __webpack_require__(/*! ./plugin/initialize */ 178),
+	    update = __webpack_require__(/*! ./plugin/update */ 187);
 	
 	module.exports = {
 	  initialize: initialize,
@@ -19501,7 +19785,7 @@
 	};
 
 /***/ },
-/* 167 */
+/* 170 */
 /*!******************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/destroy.js ***!
   \******************************************************/
@@ -19512,9 +19796,9 @@
 	 */
 	'use strict';
 	
-	var d = __webpack_require__(/*! ../lib/dom */ 168),
-	    h = __webpack_require__(/*! ../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ./instances */ 171);
+	var d = __webpack_require__(/*! ../lib/dom */ 171),
+	    h = __webpack_require__(/*! ../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ./instances */ 174);
 	
 	module.exports = function (element) {
 	  var i = instances.get(element);
@@ -19534,7 +19818,7 @@
 	};
 
 /***/ },
-/* 168 */
+/* 171 */
 /*!***********************************************!*\
   !*** ./~/perfect-scrollbar/src/js/lib/dom.js ***!
   \***********************************************/
@@ -19619,7 +19903,7 @@
 	};
 
 /***/ },
-/* 169 */
+/* 172 */
 /*!**************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/lib/helper.js ***!
   \**************************************************/
@@ -19630,8 +19914,8 @@
 	 */
 	'use strict';
 	
-	var cls = __webpack_require__(/*! ./class */ 170),
-	    d = __webpack_require__(/*! ./dom */ 168);
+	var cls = __webpack_require__(/*! ./class */ 173),
+	    d = __webpack_require__(/*! ./dom */ 171);
 	
 	exports.toInt = function (x) {
 	  return parseInt(x, 10) || 0;
@@ -19704,7 +19988,7 @@
 	};
 
 /***/ },
-/* 170 */
+/* 173 */
 /*!*************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/lib/class.js ***!
   \*************************************************/
@@ -19757,7 +20041,7 @@
 	};
 
 /***/ },
-/* 171 */
+/* 174 */
 /*!********************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/instances.js ***!
   \********************************************************/
@@ -19768,11 +20052,11 @@
 	 */
 	'use strict';
 	
-	var d = __webpack_require__(/*! ../lib/dom */ 168),
-	    defaultSettings = __webpack_require__(/*! ./default-setting */ 172),
-	    EventManager = __webpack_require__(/*! ../lib/event-manager */ 173),
-	    guid = __webpack_require__(/*! ../lib/guid */ 174),
-	    h = __webpack_require__(/*! ../lib/helper */ 169);
+	var d = __webpack_require__(/*! ../lib/dom */ 171),
+	    defaultSettings = __webpack_require__(/*! ./default-setting */ 175),
+	    EventManager = __webpack_require__(/*! ../lib/event-manager */ 176),
+	    guid = __webpack_require__(/*! ../lib/guid */ 177),
+	    h = __webpack_require__(/*! ../lib/helper */ 172);
 	
 	var instances = {};
 	
@@ -19872,7 +20156,7 @@
 	};
 
 /***/ },
-/* 172 */
+/* 175 */
 /*!**************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/default-setting.js ***!
   \**************************************************************/
@@ -19899,7 +20183,7 @@
 	};
 
 /***/ },
-/* 173 */
+/* 176 */
 /*!*********************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/lib/event-manager.js ***!
   \*********************************************************/
@@ -19981,7 +20265,7 @@
 	module.exports = EventManager;
 
 /***/ },
-/* 174 */
+/* 177 */
 /*!************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/lib/guid.js ***!
   \************************************************/
@@ -20002,7 +20286,7 @@
 	})();
 
 /***/ },
-/* 175 */
+/* 178 */
 /*!*********************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/initialize.js ***!
   \*********************************************************/
@@ -20013,19 +20297,19 @@
 	 */
 	'use strict';
 	
-	var cls = __webpack_require__(/*! ../lib/class */ 170),
-	    h = __webpack_require__(/*! ../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ./instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ./update-geometry */ 176);
+	var cls = __webpack_require__(/*! ../lib/class */ 173),
+	    h = __webpack_require__(/*! ../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ./instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ./update-geometry */ 179);
 	
 	// Handlers
-	var clickRailHandler = __webpack_require__(/*! ./handler/click-rail */ 177),
-	    dragScrollbarHandler = __webpack_require__(/*! ./handler/drag-scrollbar */ 178),
-	    keyboardHandler = __webpack_require__(/*! ./handler/keyboard */ 179),
-	    mouseWheelHandler = __webpack_require__(/*! ./handler/mouse-wheel */ 180),
-	    nativeScrollHandler = __webpack_require__(/*! ./handler/native-scroll */ 181),
-	    selectionHandler = __webpack_require__(/*! ./handler/selection */ 182),
-	    touchHandler = __webpack_require__(/*! ./handler/touch */ 183);
+	var clickRailHandler = __webpack_require__(/*! ./handler/click-rail */ 180),
+	    dragScrollbarHandler = __webpack_require__(/*! ./handler/drag-scrollbar */ 181),
+	    keyboardHandler = __webpack_require__(/*! ./handler/keyboard */ 182),
+	    mouseWheelHandler = __webpack_require__(/*! ./handler/mouse-wheel */ 183),
+	    nativeScrollHandler = __webpack_require__(/*! ./handler/native-scroll */ 184),
+	    selectionHandler = __webpack_require__(/*! ./handler/selection */ 185),
+	    touchHandler = __webpack_require__(/*! ./handler/touch */ 186);
 	
 	module.exports = function (element, userSettings) {
 	  userSettings = typeof userSettings === 'object' ? userSettings : {};
@@ -20054,7 +20338,7 @@
 	};
 
 /***/ },
-/* 176 */
+/* 179 */
 /*!**************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/update-geometry.js ***!
   \**************************************************************/
@@ -20065,10 +20349,10 @@
 	 */
 	'use strict';
 	
-	var cls = __webpack_require__(/*! ../lib/class */ 170),
-	    d = __webpack_require__(/*! ../lib/dom */ 168),
-	    h = __webpack_require__(/*! ../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ./instances */ 171);
+	var cls = __webpack_require__(/*! ../lib/class */ 173),
+	    d = __webpack_require__(/*! ../lib/dom */ 171),
+	    h = __webpack_require__(/*! ../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ./instances */ 174);
 	
 	function getThumbSize(i, thumbSize) {
 	  if (i.settings.minScrollbarLength) {
@@ -20169,7 +20453,7 @@
 	};
 
 /***/ },
-/* 177 */
+/* 180 */
 /*!*****************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/click-rail.js ***!
   \*****************************************************************/
@@ -20180,9 +20464,9 @@
 	 */
 	'use strict';
 	
-	var h = __webpack_require__(/*! ../../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var h = __webpack_require__(/*! ../../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindClickRailHandler(element, i) {
 	  function pageOffset(el) {
@@ -20239,7 +20523,7 @@
 	};
 
 /***/ },
-/* 178 */
+/* 181 */
 /*!*********************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/drag-scrollbar.js ***!
   \*********************************************************************/
@@ -20250,10 +20534,10 @@
 	 */
 	'use strict';
 	
-	var d = __webpack_require__(/*! ../../lib/dom */ 168),
-	    h = __webpack_require__(/*! ../../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var d = __webpack_require__(/*! ../../lib/dom */ 171),
+	    h = __webpack_require__(/*! ../../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindMouseScrollXHandler(element, i) {
 	  var currentLeft = null;
@@ -20352,7 +20636,7 @@
 	};
 
 /***/ },
-/* 179 */
+/* 182 */
 /*!***************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/keyboard.js ***!
   \***************************************************************/
@@ -20363,9 +20647,9 @@
 	 */
 	'use strict';
 	
-	var h = __webpack_require__(/*! ../../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var h = __webpack_require__(/*! ../../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindKeyboardHandler(element, i) {
 	  var hovered = false;
@@ -20486,7 +20770,7 @@
 	};
 
 /***/ },
-/* 180 */
+/* 183 */
 /*!******************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/mouse-wheel.js ***!
   \******************************************************************/
@@ -20497,9 +20781,9 @@
 	 */
 	'use strict';
 	
-	var h = __webpack_require__(/*! ../../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var h = __webpack_require__(/*! ../../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindMouseWheelHandler(element, i) {
 	  var shouldPrevent = false;
@@ -20636,7 +20920,7 @@
 	};
 
 /***/ },
-/* 181 */
+/* 184 */
 /*!********************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/native-scroll.js ***!
   \********************************************************************/
@@ -20647,8 +20931,8 @@
 	 */
 	'use strict';
 	
-	var instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindNativeScrollHandler(element, i) {
 	  i.event.bind(element, 'scroll', function () {
@@ -20662,7 +20946,7 @@
 	};
 
 /***/ },
-/* 182 */
+/* 185 */
 /*!****************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/selection.js ***!
   \****************************************************************/
@@ -20673,9 +20957,9 @@
 	 */
 	'use strict';
 	
-	var h = __webpack_require__(/*! ../../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var h = __webpack_require__(/*! ../../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindSelectionHandler(element, i) {
 	  function getRangeNode() {
@@ -20780,7 +21064,7 @@
 	};
 
 /***/ },
-/* 183 */
+/* 186 */
 /*!************************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/handler/touch.js ***!
   \************************************************************/
@@ -20791,8 +21075,8 @@
 	 */
 	'use strict';
 	
-	var instances = __webpack_require__(/*! ../instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 176);
+	var instances = __webpack_require__(/*! ../instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ../update-geometry */ 179);
 	
 	function bindTouchHandler(element, i, supportsTouch, supportsIePointer) {
 	  function shouldPreventDefault(deltaX, deltaY) {
@@ -20956,7 +21240,7 @@
 	};
 
 /***/ },
-/* 184 */
+/* 187 */
 /*!*****************************************************!*\
   !*** ./~/perfect-scrollbar/src/js/plugin/update.js ***!
   \*****************************************************/
@@ -20967,10 +21251,10 @@
 	 */
 	'use strict';
 	
-	var d = __webpack_require__(/*! ../lib/dom */ 168),
-	    h = __webpack_require__(/*! ../lib/helper */ 169),
-	    instances = __webpack_require__(/*! ./instances */ 171),
-	    updateGeometry = __webpack_require__(/*! ./update-geometry */ 176);
+	var d = __webpack_require__(/*! ../lib/dom */ 171),
+	    h = __webpack_require__(/*! ../lib/helper */ 172),
+	    instances = __webpack_require__(/*! ./instances */ 174),
+	    updateGeometry = __webpack_require__(/*! ./update-geometry */ 179);
 	
 	module.exports = function (element) {
 	  var i = instances.get(element);
@@ -20999,7 +21283,30 @@
 	};
 
 /***/ },
-/* 185 */
+/* 188 */
+/*!**********************************!*\
+  !*** ./js/components/connect.js ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var MakeConnectedComponent = __webpack_require__(/*! ./MakeConnectedComponent */ 161);
+	
+	function connect(store) {
+	  for (var _len = arguments.length, propNames = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    propNames[_key - 1] = arguments[_key];
+	  }
+	
+	  return function (ViewComponent) {
+	    return MakeConnectedComponent.apply(undefined, [ViewComponent, store].concat(propNames));
+	  };
+	}
+	
+	module.exports = connect;
+
+/***/ },
+/* 189 */
 /*!***********************************!*\
   !*** ./js/components/Checkout.js ***!
   \***********************************/
@@ -21007,13 +21314,18 @@
 
 	"use strict";
 	
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
 	var React = __webpack_require__(/*! react */ 1);
 	
-	var _require = __webpack_require__(/*! ../data */ 163);
+	var connect = __webpack_require__(/*! ./connect */ 188);
 	
-	var products = _require.products;
-	
-	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 161);
+	var ProductStore = __webpack_require__(/*! ../stores/ProductStore */ 190);
+	var CartStore = __webpack_require__(/*! ../stores/CartStore */ 163);
 	
 	var Checkout = React.createClass({
 	  displayName: "Checkout",
@@ -21022,7 +21334,11 @@
 	    CartStore.addChangeListener(this.forceUpdate.bind(this));
 	  },
 	  render: function render() {
-	    var cartItems = CartStore.getCartItems();
+	    // let cartItems = CartStore.getCartItems();
+	    var _props = this.props;
+	    var products = _props.products;
+	    var cartItems = _props.cartItems;
+	
 	    var discount = 0;
 	    var subtotal = 0;
 	    Object.keys(cartItems).forEach(function (id) {
@@ -21088,7 +21404,92 @@
 	  }
 	});
 	
-	module.exports = Checkout;
+	var ConnectedCheckout = (function (_Checkout) {
+	  _inherits(ConnectedCheckout, _Checkout);
+	
+	  function ConnectedCheckout() {
+	    _classCallCheck(this, _ConnectedCheckout);
+	
+	    _get(Object.getPrototypeOf(_ConnectedCheckout.prototype), "constructor", this).apply(this, arguments);
+	  }
+	
+	  var _ConnectedCheckout = ConnectedCheckout;
+	  ConnectedCheckout = connect(ProductStore, "products")(ConnectedCheckout) || ConnectedCheckout;
+	  ConnectedCheckout = connect(CartStore, "cartItems")(ConnectedCheckout) || ConnectedCheckout;
+	  return ConnectedCheckout;
+	})(Checkout);
+	
+	module.exports = ConnectedCheckout;
+
+/***/ },
+/* 190 */
+/*!***********************************!*\
+  !*** ./js/stores/ProductStore.js ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var EventEmitter = __webpack_require__(/*! events */ 164);
+	
+	var LikeStore = __webpack_require__(/*! ./LikeStore */ 165);
+	
+	var _require = __webpack_require__(/*! ../data */ 166);
+	
+	var products = _require.products;
+	
+	var emitter = new EventEmitter();
+	
+	var _products = products;
+	
+	var _showOnlyLike = false;
+	
+	function emitChange() {
+		emitter.emit("change");
+	}
+	
+	module.exports = {
+		products: function products() {
+			return _products;
+		},
+	
+		filteredProducts: function filteredProducts() {
+			if (!_showOnlyLike) {
+				return _products;
+			} else {
+				var _ret = (function () {
+					var likeItems = LikeStore.getLikeItems();
+					var _likeProducts = {};
+					Object.keys(_products).forEach(function (id) {
+						if (likeItems[id]) {
+							_likeProducts[id] = _products[id];
+						};
+					});
+					return {
+						v: _likeProducts
+					};
+				})();
+	
+				if (typeof _ret === "object") return _ret.v;
+			}
+		},
+	
+		isShowOnlyLike: function isShowOnlyLike() {
+			return _showOnlyLike;
+		},
+	
+		toggleShowOnlyLike: function toggleShowOnlyLike() {
+			_showOnlyLike = !_showOnlyLike;
+			emitChange();
+		},
+	
+		addChangeListener: function addChangeListener(callback) {
+			emitter.addListener("change", callback);
+		},
+		removeChangeListener: function removeChangeListener(callback) {
+			emitter.removeListener("change", callback);
+		}
+	};
 
 /***/ }
 /******/ ]);

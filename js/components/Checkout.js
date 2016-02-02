@@ -1,7 +1,8 @@
 const React = require("react");
 
-const {products} = require("../data");
+const connect = require("./connect");
 
+const ProductStore = require("../stores/ProductStore");
 const CartStore = require("../stores/CartStore");
 
 let Checkout = React.createClass({
@@ -9,7 +10,8 @@ let Checkout = React.createClass({
     CartStore.addChangeListener(this.forceUpdate.bind(this));
   },
   render() {
-    let cartItems = CartStore.getCartItems();
+    // let cartItems = CartStore.getCartItems();
+    let {products,cartItems} = this.props;
   	let discount = 0;
   	let subtotal = 0;
   	Object.keys(cartItems).forEach(id => {
@@ -56,4 +58,8 @@ let Checkout = React.createClass({
   }
 });
 
-module.exports = Checkout;
+@connect(CartStore,"cartItems")
+@connect(ProductStore,"products")
+class ConnectedCheckout extends Checkout {}
+
+module.exports = ConnectedCheckout;

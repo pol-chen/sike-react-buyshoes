@@ -13,6 +13,10 @@ module.exports = {
     return _cartItems;
   },
 
+  cartItems() {
+    return _cartItems;
+  },
+
   addCartItem(productId) {
     let item = {};
     item.id = productId;
