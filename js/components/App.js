@@ -14,7 +14,6 @@ let App = React.createClass({
   },
   render() {
     return (
-
       <div className="site">
         <div className="bg">
           <div className="bg__img">

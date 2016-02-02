@@ -3,7 +3,8 @@ const React = require("react");
 const connect = require("./connect");
 
 const ProductStore = require("../stores/ProductStore");
-const {toggleShowOnlyLike} = ProductStore;
+
+const {toggleShowOnlyLike} = require("../actions/actions");
 
 let SiteTitle = React.createClass({
   toggleLike() {

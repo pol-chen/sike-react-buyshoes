@@ -1,4 +1,5 @@
 const EventEmitter = require("events");
+const AppDispatcher = require("../AppDispatcher");
 
 const LikeStore = require("./LikeStore");
 
@@ -12,6 +13,18 @@ let _showOnlyLike = false;
 
 function emitChange() {
 	emitter.emit("change");
+}
+
+AppDispatcher.register((action) => {
+	let handler = handlers[action.type];
+	handler && handler(action);
+})
+
+let handlers = {
+	toggleShowOnlyLike() {
+		_showOnlyLike = !_showOnlyLike;
+		emitChange();
+	}
 }
 
 module.exports = {

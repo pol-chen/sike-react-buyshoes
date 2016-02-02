@@ -6,9 +6,10 @@ const connect = require("./connect");
 const QuantityControl = require("./QuantityControl");
 
 const CartStore = require("../stores/CartStore");
-const {removeCartItem} = CartStore;
+const {removeCartItem,undoShoppingCart} = require("../actions/actions");
 
 const ProductStore = require("../stores/ProductStore");
+const UndoStore = require("../stores/UndoStore");
 
 let CartItem = React.createClass({
   removeProductFromCart(id) {
@@ -55,6 +56,11 @@ let Cart = React.createClass({
     Ps.initialize($cart);
   	// CartStore.addChangeListener(this.forceUpdate.bind(this));
   },
+
+  undo() {
+    undoShoppingCart();
+  },
+
   renderCartItems() {
   	// let cartItems = CartStore.getCartItems();
     let {cartItems,products} = this.props;
@@ -65,13 +71,19 @@ let Cart = React.createClass({
   },
 
   render() {
+    let {isUndoable} = this.props;
+    let undoDisplay = isUndoable ? (
+      <h3 className="cart__undo"><a onClick={this.undo.bind(this)}>undo</a></h3>
+    ) : ("");
+
     return (
-	  <div className="cart">
+	    <div className="cart">
         <h3 className="cart__title">Shopping Cart</h3>
         <div className="cart__content" ref="cart">
           <h3 className="cart__title cart__title--spacer">Shopping Cart</h3>
           {this.renderCartItems()}
         </div>
+        {undoDisplay}
       </div>
     );
   }
@@ -89,6 +101,7 @@ let Cart = React.createClass({
 
 @connect(CartStore,"cartItems")
 @connect(ProductStore,"products")
+@connect(UndoStore,"isUndoable")
 class ConnectedCart extends Cart {};
 
 module.exports = ConnectedCart;

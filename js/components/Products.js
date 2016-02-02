@@ -5,12 +5,10 @@ const connect = require("./connect");
 const QuantityControl = require("./QuantityControl");
 
 const CartStore = require("../stores/CartStore");
-const {addCartItem} = CartStore;
-
 const LikeStore = require("../stores/LikeStore");
-const {addLikeItem,removeLikeItem} = LikeStore;
-
 const ProductStore = require("../stores/ProductStore");
+
+const {addCartItem,addLikeItem,removeLikeItem} = require("../actions/actions");
 
 let Product = React.createClass({
   addProductToCart(id) {

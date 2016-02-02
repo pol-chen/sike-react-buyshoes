@@ -53,6 +53,7 @@ p {
 
 a {
   font-weight: 400;
+  cursor: pointer;
 }
 
 /*a:hover {
@@ -255,6 +256,14 @@ a {
   opacity: 0;
 }
 
+.cart__undo {
+  position: absolute;
+  top: 0; right: 0;
+  padding: 15px 0;
+  justify-content: center;
+  z-index: 20;
+}
+
 .cart-item {
   /*padding: 0 20px;*/
   margin-bottom: 15px;
@@ -316,6 +325,11 @@ a {
 .adjust-qty--gray .adjust-qty__button {
   background: #D8D8D8;
   color: #fff;
+}
+
+.adjust-qty--gray {
+  margin: 15px 0;
+  height: 60px;
 }
 
 .checkout {
